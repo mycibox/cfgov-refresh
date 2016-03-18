@@ -40,15 +40,17 @@
             {% include 'templates/render_block.html' with context %}
         {% endif %}
     {% endfor %}
-    <aside class="prefooter">
-        {% for block in page.sidefoot %}
-            <div class="block block__flush-top">
-                {% if 'related_posts' in block.block_type %}
-                    {{ related_posts.render(block) }}
-                {% else %}
-                    {{ render_stream_child(block) }}
-                {% endif %}
-            </div>
-        {% endfor %}
-    </aside>
+    {% if page.sidefoot %}
+        <aside class="prefooter">
+            {% for block in page.sidefoot %}
+                <div class="block block__flush-top">
+                    {% if 'related_posts' in block.block_type %}
+                        {{ related_posts.render(block) }}
+                    {% else %}
+                        {{ render_stream_child(block) }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </aside>
+    {% endif %}
 {% endblock %}

@@ -36,21 +36,23 @@
         {% include 'templates/render_block.html' with context %}
     {%- endfor %}
 
-    <aside class="prefooter">
-        {% for block in page.sidefoot %}
-            {% if 'related_posts' or 'call_to_action' or 'email_signup' in block.block_type %}
-                {% if loop.index == 1 %}
-                    <div class="block
-                                block__flush-top">
-                        {{ render_stream_child(block) }}
-                    </div>
-                {% else %}
-                    <div class="block">
-                        {{ render_stream_child(block) }}
-                    </div>
+    {% if page.sidefoot %}
+        <aside class="prefooter">
+            {% for block in page.sidefoot %}
+                {% if 'related_posts' or 'call_to_action' or 'email_signup' in block.block_type %}
+                    {% if loop.index == 1 %}
+                        <div class="block
+                                    block__flush-top">
+                            {{ render_stream_child(block) }}
+                        </div>
+                    {% else %}
+                        <div class="block">
+                            {{ render_stream_child(block) }}
+                        </div>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-        {% endfor %}
-    </aside>
+            {% endfor %}
+        </aside>
+    {% endif %}
 {% endblock %}
 
