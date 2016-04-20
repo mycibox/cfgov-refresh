@@ -1,5 +1,4 @@
 {% extends 'layout-2-1-bleedbar.html' %}
-{% import '_vars-events.html' as vars with context %}
 {% import 'templates/streamfield-sidefoot.html' as streamfield_sidefoot with context %}
 {% if page.start_dt and page.end_dt %}
     {% set event_state = when(page.start_dt | date('%c'), page.end_dt | date('%c')) %}
