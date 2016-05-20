@@ -60,8 +60,22 @@ function contains( element, value ) {
   return values.indexOf( value ) > -1 ? true : false;
 }
 
+/**
+ * @param {string} behavior
+ *  Behavior type used to find the element within the dom.
+ * @returns {HTMLNode} if it exists in the dom, null otherwise.
+ */
+function get( behavior ) {
+  var behaviorSelector =
+  standardType.JS_HOOK + '*=' + standardType.BEHAVIOR_PREFIX + behavior;
+  var behaviorElement = document.querySelector( '[' + behaviorSelector + ']' );
+
+  return behaviorElement;
+}
+
 module.exports = {
   add:      add,
   contains: contains,
+  get:      get,
   remove:   remove
 };
