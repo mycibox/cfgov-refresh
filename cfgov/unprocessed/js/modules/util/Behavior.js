@@ -13,7 +13,7 @@ var Behavior = {};
  */
 Behavior.create = function create( selector, event, eventHandler ) {
   var behaviorElements = document.querySelectorAll( selector );
-  if( behaviorElements === null ) {
+  if( behaviorElements.length === 0 ) {
     return;
   }
   for( var i = 0, len = behaviorElements.length; i < len; i++ ) {
@@ -22,7 +22,7 @@ Behavior.create = function create( selector, event, eventHandler ) {
 };
 
 /**
- * @param {HTMLNode} behaviorElement Elment in which to remove the event.
+ * @param {HTMLNode} behaviorElement Element in which to remove the event.
  * @param {string} event Event type to remove from the element.
  * @param {function} eventHandler Callback for event.
  */
