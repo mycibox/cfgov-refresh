@@ -94,28 +94,28 @@ function attach( behaviorElement, event, eventHandler, baseElement ) {
  * @returns {HTMLNode} The DOM element that has an attached behavior.
  * @throws {Error} If data-js-hook attribute value was not found on DOM element.
  */
-function checkBehaviorDom(element, behaviorDataAttr) {
-    // Check that the behavior is found on the passed DOM node.
-    var dom;
+function checkBehaviorDom( element, behaviorDataAttr ) {
+  // Check that the behavior is found on the passed DOM node.
+  var dom;
 
-    if (dataHook.contains(element, behaviorDataAttr)) {
-        dom = element;
-        return dom;
-    }
-
-    // If the passed DOM node isn't null,
-    // query the node to see if it's in the children.
-    if (element) {
-        var selector = '[' + standardType.JS_HOOK + '=' + behaviorDataAttr + ']';
-        dom = element.querySelector(selector);
-    }
-
-    if (!dom) {
-        var msg = behaviorDataAttr + ' behavior not found on passed DOM node!';
-        throw new Error(msg);
-    }
-
+  if ( dataHook.contains( element, behaviorDataAttr ) ) {
+    dom = element;
     return dom;
+  }
+
+  // If the passed DOM node isn't null,
+  // query the node to see if it's in the children.
+  if ( element ) {
+    var selector = '[' + standardType.JS_HOOK + '=' + behaviorDataAttr + ']';
+    dom = element.querySelector( selector );
+  }
+
+  if ( !dom ) {
+    var msg = behaviorDataAttr + ' behavior not found on passed DOM node!';
+    throw new Error( msg );
+  }
+
+  return dom;
 }
 
 /**

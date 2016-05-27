@@ -10,12 +10,12 @@
 
 'use strict';
 
-var createBehavior = require( './util/behavior' ).create;
+var attachBehavior = require( './util/behavior' ).attach;
 /**
  * Parse links to handle webkit bug with keyboard focus.
  */
 function init() {
-  createBehavior( 'a[href^="#"]', 'click', function behavior() {
+  attachBehavior( 'a[href^="#"]', 'click', function behavior() {
     var anchorSelector = this.getAttribute( 'href' );
     var anchorElement = document.querySelector( anchorSelector );
     if ( anchorElement ) {
