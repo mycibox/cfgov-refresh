@@ -16,7 +16,16 @@ var defaultSuites = {
       browserName: 'chrome',
       version:     '',
       platform:    'Windows',
-      maxDuration: 10800
+      maxDuration: 10800,
+      windowSize:  '1080,1200'
+    },
+    {
+      specs:       [ environment.specsBasePath + '*.js' ],
+      browserName: 'chrome',
+      version:     '',
+      platform:    'Windows',
+      maxDuration: 10800,
+      windowSize:  '1080,1200'
     }
   ],
 

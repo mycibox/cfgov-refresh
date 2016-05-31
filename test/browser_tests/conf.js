@@ -89,6 +89,10 @@ function _retrieveProtractorParams( params ) { // eslint-disable-line complexity
     parsedParams.platform = params.platform;
   }
 
+  if ( _paramIsSet( params.windowSize ) ) {
+    parsedParams.windowSize = params.windowSize;
+  }
+
   return parsedParams;
 }
 
@@ -118,10 +122,7 @@ function _copyParameters( params, capabilities ) { // eslint-disable-line comple
                         ' ' + capability.version : '' ) +
                       ' on ' + capability.platform +
                       ' at ' +
-                      ( params.windowSize ?
-                        params.windowSize :
-                        environment.windowWidthPx + ',' +
-                        environment.windowHeightPx ) + 'px';
+                      capability.windowSize;
     newCapabilities.push( capability );
   }
 
@@ -154,34 +155,26 @@ var config = {
   onPrepare: function() {
     browser.ignoreSynchronization = true;
 
-    // If --windowSize=w,h flag was passed, set window dimensions.
-    // Otherwise, use default values from the test settings.
-    var windowSize = browser.params.windowSize;
-    var windowWidthPx;
-    var windowHeightPx;
-    if ( typeof windowSize === 'undefined' ) {
-      windowWidthPx = environment.windowWidthPx;
-      windowHeightPx = environment.windowHeightPx;
-    } else {
-      var windowSizeArray = windowSize.split( ',' );
-      windowWidthPx = Number( windowSizeArray[0] );
-      windowHeightPx = Number( windowSizeArray[1] );
-    }
-
-    browser.driver.manage().window().setSize(
-      windowWidthPx,
-      windowHeightPx
-    );
-
-    // Set default windowSize parameter equal to the value in settings.js.
-    browser.params.windowWidth = windowWidthPx;
-    browser.params.windowHeight = windowHeightPx;
-    browser.params.windowSize = String( windowWidthPx ) +
-                                ',' + String( windowHeightPx );
-
     browser.getProcessedConfig().then( function( cf ) {
+      var windowSize = cf.capabilities.windowSize;
+      var windowSizeArray = windowSize.split( ',' );
+      var windowWidthPx = Number( windowSizeArray[0] );
+      var windowHeightPx = Number( windowSizeArray[1] );
+
+      browser.driver.manage().window().setSize(
+        windowWidthPx,
+        windowHeightPx
+      );
+
+      // Set default windowSize parameter equal to the values above
+      browser.params.windowWidth = windowWidthPx;
+      browser.params.windowHeight = windowHeightPx;
+      browser.params.windowSize = String( windowWidthPx ) +
+                                  ',' + String( windowHeightPx );
+
       console.log( 'Executing...', cf.capabilities.name ); // eslint-disable-line no-console, no-inline-comments, max-len
     } );
+
     return;
   }
 };
