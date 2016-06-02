@@ -43,32 +43,44 @@
    ========================================================================== #}
 
 {% macro _nav_list( nav_depth, nav_items ) %}
-{%- for nav_group in nav_items %}
 <ul class="list
            list__unstyled
-           {{ _classes( nav_depth, '-list' ) if nav_depth == 2 else '' }}">
+           {{ _classes( nav_depth, '-list' ) }}">
+
+    {# Add CTA to top level nav list #}
+    {% if nav_depth == 1 -%}
+    <li class="list_item
+               {{ _classes( nav_depth, '-item' ) }}">
+        {% import 'molecules/global-header-cta.html' as global_header_cta with context %}
+        {{ global_header_cta.render() }}
+    </li>
+    {%- endif %}
+
+{%- for nav_group in nav_items %}
     {%- for nav_caption,
             nav_url,
             nav_children in nav_group %}
     <li class="list_item
                {{ _classes( nav_depth, '-item' ) }}"
-        {{ 'data-js-hook=behavior_flyout-menu' if nav_depth == 1 else '' }}>
+        {{ 'data-js-hook=behavior_flyout-menu' if nav_children | count > 0 else '' }}>
         {# TODO: Disable link (or overview link) of page user is currently on (on mobile). #}
         <a class="{{ 'u-link__disabled' if nav_url == '' else '' }}
                   {{ _classes( nav_depth, '-link' ) }}
+                  {{ _classes( nav_depth, '-link__has-children' ) if nav_children | count > 0 else '' }}
                   {{ _classes( nav_depth, '-link__current' ) if nav_url == request.path else '' }}"
            {{ '' if nav_url == '' else 'href=' + nav_url | e }}
-           {{ 'data-js-hook=behavior_flyout-menu_trigger' if nav_depth == 1 else '' }}
-           {{ 'aria-pressed=false' if nav_depth == 1 else '' }}>
+           {{ 'data-js-hook=behavior_flyout-menu_trigger' if nav_children | count > 0 else '' }}
+           {{ 'aria-pressed=false' if nav_children | count > 0 else '' }}>
             {{ nav_caption }}
         </a>
-        {% if nav_depth == 1 %}
+        {% if nav_children | count > 0 %}
             {{ _nav( nav_depth | int + 1, nav_children, nav_caption ~ ' Overview', nav_url, vars.media_items ) }}
         {% endif %}
     </li>
     {%- endfor %}
-</ul>
 {%- endfor %}
+
+</ul>
 {% endmacro %}
 
 {# ==========================================================================
@@ -94,53 +106,48 @@
    ========================================================================== #}
 
 {% macro _nav( nav_depth, nav_items, nav_overview, nav_overview_url, media_items ) %}
-
-{% if nav_depth == 1 %}
-
-  {{ _nav_list( nav_depth, nav_items ) }}
-
-{% else %}
 <div class="{{ _classes( nav_depth ) }}
             u-hidden-overflow"
      aria-expanded="false"
      data-js-hook="behavior_flyout-menu_content">
 
     <div class="{{ _classes( nav_depth, '-wrapper' ) }}">
+          {% if nav_depth > 1 %}
+          <button class="{{ _classes( nav_depth, '-alt-trigger' ) }}"
+                  data-js-hook="behavior_flyout-menu_alt-trigger">
+              Back
+          </button>
+          {% endif %}
+          <div class="{{ _classes( nav_depth, '-grid' ) }}">
+              {% if nav_depth > 1 %}
+                  {# TODO: Remove the check for '#' when real overview pages
+                           are added for the Consumer Resources and Education
+                           pages. #}
+                  {% if nav_overview_url %}
+                  <a class="{{ 'u-link__disabled' if nav_overview_url == '#' else '' }}
+                            {{ _classes( nav_depth, '-overview-link' ) }}
+                            {{ _classes( nav_depth, '-overview-link__current' ) if nav_overview_url == request.path else '' }}"
+                     {{ '' if nav_overview_url == request.path or nav_overview_url == '#' else 'href=' + nav_overview_url | e }}>
+                      {{ nav_overview }}
+                  </a>
+                  {% endif %}
+              {% endif %}
 
-        <div class="wrapper">
-
-            <div class="{{ _classes( nav_depth, '-grid' ) }}">
-                <span class="{{ _classes( nav_depth, '-overview' ) }}">
-                    {# TODO: Remove the check for '#' when real overview pages
-                             are added for the Consumer Resources and Education
-                             pages. #}
-                    {% if nav_overview_url %}
-                    <a class="{{ 'u-link__disabled' if nav_overview_url == '#' else '' }}
-                              {{ _classes( nav_depth, '-overview-link' ) }}
-                              {{ _classes( nav_depth, '-overview-link__current' ) if nav_overview_url == request.path else '' }}"
-                       {{ '' if nav_overview_url == request.path or nav_overview_url == '#' else 'href=' + nav_overview_url | e }}>
-                        {{ nav_overview }}
-                    </a>
-                    {% endif %}
-                </span>
-
-                <div class="{{ _classes( nav_depth, '-lists' ) }}">
-                    {{ _nav_list( nav_depth, nav_items ) }}
-                </div>
-            </div>
-            {% for url, fmc in media_items %}
-                {% if url == nav_overview_url %}
-                {{ fmc }}
-                {% endif %}
-            {% endfor %}
-
-        </div>
-
+              {{ _nav_list( nav_depth, nav_items ) }}
+          </div>
+          {% for url, fmc in media_items %}
+              {% if url == nav_overview_url %}
+              {{ fmc }}
+              {% endif %}
+          {% endfor %}
     </div>
 
-</div>
-{% endif %}
+    {% if nav_depth == 1 %}
+    {% import 'molecules/global-eyebrow.html' as global_eyebrow with context %}
+    {{ global_eyebrow.render() }}
+    {% endif %}
 
+</div>
 {% endmacro %}
 
 {# ==========================================================================
@@ -154,11 +161,19 @@
    Creates a mega menu primary navigation menu.
 
    ========================================================================== #}
-<nav class="{{ base_class }}"
+<nav class="{{ base_class }}
+            {{ base_class }}__offscreen
+            u-hidden"
+     data-js-hook="behavior_flyout-menu"
      aria-label="main navigation"
      role="navigation">
+    <button class="{{ base_class ~ '_trigger' }}"
+            data-js-hook="behavior_flyout-menu_trigger"
+            aria-pressed="false">
+        <span class="u-visually-hidden">Menu</span>
+    </button>
     {# Create a root menu at depth one.
        This is the 1st level of a 3-level menu. #}
     {{ _nav( 1, vars.nav_items ) }}
-    {# <button class="{{ base_class ~ '_tab-trigger' }}" aria-hidden="true"></button> #}
+    {#<button class="{{ base_class ~ '_tab-trigger' }}" aria-hidden="true"></button>#}
 </nav>

@@ -90,7 +90,8 @@
             </a>
 
             {% block primary_nav %}
-                {% include 'organisms/mega-menu_lg.html' with context %}
+                {#{% include 'organisms/mega-menu_offscreen.html' with context %}#}
+                {% include 'organisms/mega-menu_dropdown.html' with context %}
             {% endblock primary_nav %}
         </div>
 
