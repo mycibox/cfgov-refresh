@@ -28,6 +28,9 @@ function MegaMenu( element ) {
 
   var _dom = atomicHelpers.checkDom( element, BASE_CLASS );
 
+  var _navType = _dom.classList.contains( BASE_CLASS + '__dropdown' ) ?
+    'dropdown' : 'offscreen';
+
   // Tree data model.
   var _menus;
 

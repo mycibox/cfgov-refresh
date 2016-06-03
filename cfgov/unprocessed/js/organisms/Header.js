@@ -25,6 +25,7 @@ function Header( element ) {
 
   var _globalbanner;
   var _globalSearch;
+  var _megaMenus;
   var _megaMenu;
   var _overlay;
 
@@ -56,10 +57,14 @@ function Header( element ) {
     _globalSearch.addEventListener( 'expandBegin', _searchExpandBegin );
     _globalSearch.init();
 
-    _megaMenu = new MegaMenu( _dom );
-    _megaMenu.addEventListener( 'rootExpandBegin', _megaMenuExpandBegin );
-    _megaMenu.addEventListener( 'rootCollapseEnd', _megaMenuCollapseEnd );
-    _megaMenu.init();
+    _megaMenus = document.querySelectorAll( '.o-mega-menu' );
+
+    for ( var i = 0, len = _megaMenus.length; i < len; i++ ) {
+      _megaMenu = new MegaMenu( _megaMenus[i] );
+      _megaMenu.addEventListener( 'rootExpandBegin', _megaMenuExpandBegin );
+      _megaMenu.addEventListener( 'rootCollapseEnd', _megaMenuCollapseEnd );
+      _megaMenu.init();
+    }
 
     return this;
   }
